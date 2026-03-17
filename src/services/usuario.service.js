@@ -1,25 +1,45 @@
-const usuarios = require('../data/usuarios');  
-  
-function obtenerTodos() {  
-  return usuarios;  
-}  
-  
-function obtenerPorId(id) {  
-  return usuarios.find(usuario => usuario.id === id);  
-}  
-  
-function crear(usuarioNuevo) {  
-  const nuevoUsuario = {  
-    id: usuarios.length + 1,  
-    ...usuarioNuevo  
-  };  
-  
-  usuarios.push(nuevoUsuario);  
-  return nuevoUsuario;  
-}  
-  
-module.exports = {  
-  obtenerTodos,  
-  obtenerPorId,  
-  crear  
-};
+const pool = require('../db/connection');
+
+async function obtenerTodos() {
+  const [rows] = await pool.query(
+    'SELECT id, nombre, correo, rol, activo, creado_en FROM usuarios WHERE activo = 1'
+  );
+  return rows;
+}
+
+async function obtenerPorId(id) {
+  const [rows] = await pool.query(
+    'SELECT id, nombre, correo, rol, activo, creado_en FROM usuarios WHERE id = ?',
+    [id]
+  );
+  return rows[0] || null;
+}
+
+async function crear(datos) {
+  const { nombre, correo, password, rol = 'user' } = datos;
+  const [result] = await pool.query(
+    'INSERT INTO usuarios (nombre, correo, password, rol) VALUES (?, ?, ?, ?)',
+    [nombre, correo, password, rol]
+  );
+  return obtenerPorId(result.insertId);
+}
+
+async function actualizar(id, datos) {
+  const { nombre, correo, rol } = datos;
+  const [result] = await pool.query(
+    'UPDATE usuarios SET nombre = ?, correo = ?, rol = ? WHERE id = ? AND activo = 1',
+    [nombre, correo, rol, id]
+  );
+  if (result.affectedRows === 0) return null;
+  return obtenerPorId(id);
+}
+
+async function eliminar(id) {
+  const [result] = await pool.query(
+    'UPDATE usuarios SET activo = 0 WHERE id = ? AND activo = 1',
+    [id]
+  );
+  return result.affectedRows > 0;
+}
+
+module.exports = { obtenerTodos, obtenerPorId, crear, actualizar, eliminar };
