@@ -22,11 +22,11 @@ async function obtenerUsuario(req, res) {
 
 async function crearUsuario(req, res) {
   try {
-    const { nombre, correo, password, rol } = req.body;
-    if (!nombre || !correo || !password) {
-      return res.status(400).json({ error: 'Los campos nombre, correo y password son obligatorios' });
+    const { nombre, correo} = req.body;
+    if (!nombre || !correo) {
+      return res.status(400).json({ error: 'Los campos nombre y correo son obligatorios' });
     }
-    const nuevoUsuario = await usuarioService.crear({ nombre, correo, password, rol });
+    const nuevoUsuario = await usuarioService.crear({ nombre, correo});
     res.status(201).json(nuevoUsuario);
   } catch (err) {
     res.status(500).json({ error: 'Error al crear el usuario' });

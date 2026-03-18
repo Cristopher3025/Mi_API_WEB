@@ -16,13 +16,13 @@ async function obtenerPorId(id) {
 }
 
 async function crear(datos) {
-  const { nombre, correo, password, rol = 'user' } = datos;
+  const { nombre, correo, activo = 1, rol = 'user', creado_en = new Date(), actualizado_en = new Date() } = datos;
   const [result] = await pool.query(
-    'INSERT INTO usuarios (nombre, correo, password, rol) VALUES (?, ?, ?, ?)',
-    [nombre, correo, password, rol]
+    'INSERT INTO usuarios (nombre, correo, activo, rol, creado_en, actualizado_en) VALUES (?, ?, ?, ?, ?, ?)',
+    [nombre, correo, activo, rol, creado_en, actualizado_en]
   );
   return obtenerPorId(result.insertId);
-}
+} 
 
 async function actualizar(id, datos) {
   const { nombre, correo, rol } = datos;
