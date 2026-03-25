@@ -22,7 +22,7 @@ async function crear(datos) {
     [nombre, correo, activo, rol, creado_en, actualizado_en]
   );
   return obtenerPorId(result.insertId);
-} 
+}
 
 async function actualizar(id, datos) {
   const { nombre, correo, rol } = datos;
