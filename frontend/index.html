@@ -1,67 +1,67 @@
-<!DOCTYPE html>  
-<html lang="es">  
-<head>  
-  <meta charset="UTF-8" />  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />  
-  <title>Frontend consumiendo API</title>  
-</head>  
-<body>  
-  <h1>Usuarios</h1>  
-  
-  <button onclick="cargarUsuarios()">Cargar usuarios</button>  
-  
-  <ul id="listaUsuarios"></ul>  
-  
-  <h2>Agregar usuario</h2>  
-  <input type="text" id="nombre" placeholder="Nombre" />  
-  <input type="email" id="correo" placeholder="Correo" />  
-  <button onclick="crearUsuario()">Guardar</button>  
-  
-  <script>  
-    const API_URL = 'http://localhost:3000/api/usuarios';  
-  
-    async function cargarUsuarios() {  
-      try {  
-        const respuesta = await fetch(API_URL);  
-        const usuarios = await respuesta.json();  
-  
-        const lista = document.getElementById('listaUsuarios');  
-        lista.innerHTML = '';  
-  
-        usuarios.forEach(usuario => {  
-          const li = document.createElement('li');  
-          li.textContent = `${usuario.id} - ${usuario.nombre} - ${usuario.correo}`;  
-          lista.appendChild(li);  
-        });  
-      } catch (error) {  
-        console.error('Error al cargar usuarios:', error);  
-      }  
-    }   
-  
-    async function crearUsuario() {  
-      const nombre = document.getElementById('nombre').value;  
-      const correo = document.getElementById('correo').value;  
-  
-      try {  
-        const respuesta = await fetch(API_URL, {  
-          method: 'POST',  
-          headers: {  
-            'Content-Type': 'application/json'  
-          },  
-          body: JSON.stringify({ nombre, correo })  
-        });  
-  
-        const nuevoUsuario = await respuesta.json();  
-        console.log('Usuario creado:', nuevoUsuario);  
-  
-        cargarUsuarios();  
-  
-        document.getElementById('nombre').value = '';  
-        document.getElementById('correo').value = '';  
-      } catch (error) {  
-        console.error('Error al crear usuario:', error);  
-      }  
-    }  
-  </script>  
-</body>  
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Frontend consumiendo API</title>
+  </head>
+  <body>
+    <h1>Usuarios</h1>
+
+    <button onclick="cargarUsuarios()">Cargar usuarios</button>
+
+    <ul id="listaUsuarios"></ul>
+
+    <h2>Agregar usuario</h2>
+    <input type="text" id="nombre" placeholder="Nombre" />
+    <input type="email" id="correo" placeholder="Correo" />
+    <button onclick="crearUsuario()">Guardar</button>
+
+    <script>
+      const API_URL = "http://localhost:3000/api/usuarios";
+
+      async function cargarUsuarios() {
+        try {
+          const respuesta = await fetch(API_URL);
+          const usuarios = await respuesta.json();
+
+          const lista = document.getElementById("listaUsuarios");
+          lista.innerHTML = "";
+
+          usuarios.forEach((usuario) => {
+            const li = document.createElement("li");
+            li.textContent = `${usuario.id} - ${usuario.nombre} - ${usuario.correo}`;
+            lista.appendChild(li);
+          });
+        } catch (error) {
+          console.error("Error al cargar usuarios:", error);
+        }
+      }
+
+      async function crearUsuario() {
+        const nombre = document.getElementById("nombre").value;
+        const correo = document.getElementById("correo").value;
+
+        try {
+          const respuesta = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ nombre, correo }),
+          });
+
+          const nuevoUsuario = await respuesta.json();
+          console.log("Usuario creado:", nuevoUsuario);
+
+          cargarUsuarios();
+
+          document.getElementById("nombre").value = "";
+          document.getElementById("correo").value = "";
+        } catch (error) {
+          console.error("Error al crear usuario:", error);
+        }
+      }
+    </script>
+  </body>
 </html>

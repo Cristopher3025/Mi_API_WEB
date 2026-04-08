@@ -6,7 +6,7 @@ function ProductosList({ onEdit }) {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
 
-  async function cargarUsuarios() {
+  async function cargarProductos() {
     try {
       setCargando(true);
       setError(null);
@@ -20,53 +20,56 @@ function ProductosList({ onEdit }) {
   }
 
   useEffect(() => {
-    cargarUsuarios();
+    cargarProductos();
   }, []);
 
   async function handleDelete(id) {
-    if (!confirm('¿Seguro que deseas eliminar este usuario?')) return;
+    if (!confirm('¿Seguro que deseas eliminar este producto?')) return;
+
     try {
       await deleteProducto(id);
-      await cargarUsuarios();
+      await cargarProductos();
     } catch (err) {
       alert('Error al eliminar: ' + err.message);
     }
   }
 
-  if (cargando) return <p>Cargando usuarios...</p>;
+  if (cargando) return <p>Cargando productos...</p>;
   if (error) return <p>Error: {error}</p>;
 
   return (
     <div>
-      <h2>Lista de usuarios</h2>
+      <h2>Lista de productos</h2>
+
       {productos.length === 0 ? (
-        <p>No hay usuarios registrados.</p>
+        <p>No hay productos registrados.</p>
       ) : (
         <table border="1" cellPadding="4">
           <thead>
             <tr>
               <th>Id</th>
               <th>Nombre</th>
-              <th>Correo</th>
+              <th>Precio</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {productos.map((u) => (
-              <tr key={u.id}>
-                <td>{u.id}</td>
-                <td>{u.nombre}</td>
-                <td>{u.correo}</td>
+            {productos.map((p) => (
+              <tr key={p.id}>
+                <td>{p.id}</td>
+                <td>{p.nombre}</td>
+                <td>{p.precio}</td>
                 <td>
-                  <button onClick={() => onEdit(u)}>Editar</button>
-                  <button onClick={() => handleDelete(u.id)}>Eliminar</button>
+                  <button onClick={() => onEdit(p)}>Editar</button>
+                  <button onClick={() => handleDelete(p.id)}>Eliminar</button>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       )}
-      <button onClick={cargarUsuarios}>Recargar</button>
+
+      <button onClick={cargarProductos}>Recargar</button>
     </div>
   );
 }

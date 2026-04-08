@@ -1,26 +1,26 @@
 import { useEffect, useState } from 'react';
 import { createProducto, updateProducto } from '../api/productos';
 
-const usuarioInicial = {
+const productoInicial = {
   nombre: '',
-  correo: '',
+  precio: '',
 };
 
 function ProductoForm({ productoSeleccionado, onSuccess, onCancel }) {
-  const [form, setForm] = useState(usuarioInicial);
+  const [form, setForm] = useState(productoInicial);
   const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (usuarioSeleccionado) {
+    if (productoSeleccionado) {
       setForm({
-        nombre: usuarioSeleccionado.nombre ?? '',
-        correo: usuarioSeleccionado.correo ?? '',
+        nombre: productoSeleccionado.nombre ?? '',
+        precio: productoSeleccionado.precio ?? '',
       });
     } else {
-      setForm(usuarioInicial);
+      setForm(productoInicial);
     }
-  }, [usuarioSeleccionado]);
+  }, [productoSeleccionado]);
 
   function handleChange(e) {
     const { name, value } = e.target;
@@ -31,14 +31,21 @@ function ProductoForm({ productoSeleccionado, onSuccess, onCancel }) {
     e.preventDefault();
     setGuardando(true);
     setError(null);
+
     try {
-      if (usuarioSeleccionado?.id) {
-        await updateUsuario(usuarioSeleccionado.id, form);
+      const data = {
+        ...form,
+        precio: Number(form.precio),
+      };
+
+      if (productoSeleccionado?.id) {
+        await updateProducto(productoSeleccionado.id, data);
       } else {
-        await createUsuario(form);
+        await createProducto(data);
       }
+
       onSuccess();
-      setForm(usuarioInicial);
+      setForm(productoInicial);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -48,8 +55,10 @@ function ProductoForm({ productoSeleccionado, onSuccess, onCancel }) {
 
   return (
     <div>
-      <h2>{usuarioSeleccionado ? 'Editar usuario' : 'Nuevo usuario'}</h2>
+      <h2>{productoSeleccionado ? 'Editar producto' : 'Nuevo producto'}</h2>
+
       {error && <p style={{ color: 'red' }}>Error: {error}</p>}
+
       <form onSubmit={handleSubmit}>
         <div>
           <label>
@@ -62,26 +71,29 @@ function ProductoForm({ productoSeleccionado, onSuccess, onCancel }) {
             />
           </label>
         </div>
+
         <div>
           <label>
-            Correo:
+            Precio:
             <input
-              type="email"
-              name="correo"
-              value={form.correo}
+              type="number"
+              name="precio"
+              value={form.precio}
               onChange={handleChange}
               required
             />
           </label>
         </div>
+
         <button type="submit" disabled={guardando}>
           {guardando
             ? 'Guardando...'
-            : usuarioSeleccionado
+            : productoSeleccionado
             ? 'Actualizar'
             : 'Crear'}
         </button>
-        {usuarioSeleccionado && (
+
+        {productoSeleccionado && (
           <button type="button" onClick={onCancel}>
             Cancelar edición
           </button>
@@ -91,4 +103,4 @@ function ProductoForm({ productoSeleccionado, onSuccess, onCancel }) {
   );
 }
 
-export default UsuarioForm;
+export default ProductoForm;
